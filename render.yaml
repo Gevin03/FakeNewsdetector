@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: fake-news-detector-backend
+    env: python
+    plan: free
+    dir: ./backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: DATABASE_URL
+        value: ${DATABASE_URL}
+      - key: SECRET_KEY
+        value: ${SECRET_KEY}
+      - key: REDDIT_CLIENT_ID
+        value: ${REDDIT_CLIENT_ID}
+      - key: REDDIT_CLIENT_SECRET
+        value: ${REDDIT_CLIENT_SECRET}
+
+  - type: web
+    name: fake-news-detector-frontend
+    env: node
+    plan: free
+    dir: ./frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: NODE_VERSION
+        value: "18"
+      - key: VITE_API_URL
+        value: https://fake-news-detector-backend.onrender.com

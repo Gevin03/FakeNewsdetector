@@ -1,8 +1,6 @@
 fastapi
 uvicorn
 gunicorn
-transformers
-torch
 pydantic
 python-multipart
 newspaper3k
@@ -13,8 +11,8 @@ praw
 sqlalchemy
 psycopg2-binary
 python-dotenv
-shap
-scikit-learn
 numpy
 pandas
 httpx[http2]
+feedparser
+nltk

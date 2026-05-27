@@ -16,3 +16,5 @@ pandas
 httpx[http2]
 feedparser
 nltk
+cloudscraper
+pyparsing

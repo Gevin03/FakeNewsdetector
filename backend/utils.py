@@ -9,40 +9,37 @@ try:
 except LookupError:
     nltk.download('punkt')
 
-def extract_article(url):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Referer": "https://www.google.com/",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "Sec-Ch-Ua": '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": '"Windows"',
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "cross-site",
-        "Sec-Fetch-User": "?1",
-    }
+import cloudscraper
+import requests
 
+def extract_article(url):
+    config = Config()
+    config.browser_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    config.request_timeout = 15
+    config.follow_redirects = True
+    
     try:
-        # Use httpx with HTTP/2 to bypass bot detection (e.g., Akamai)
-        with httpx.Client(http2=True, headers=headers, follow_redirects=True, timeout=20) as client:
-            response = client.get(url)
-            
-            if response.status_code == 200:
-                article = Article(url)
-                article.set_html(response.text)
-                article.parse()
-            else:
-                raise Exception(f"HTTP {response.status_code} - Site blocked the request")
+        article = Article(url, config=config)
+        article.download()
+        
+        # Check if download was successful
+        if article.download_state == 2: # Success
+            article.parse()
+            if not article.text or len(article.text) < 50:
+                 # Try again with a different UA if text is empty
+                 config.browser_user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
+                 article = Article(url, config=config)
+                 article.download()
+                 article.parse()
+        
+        if not article.text:
+            raise Exception("No content could be extracted.")
+
     except Exception as e:
-        print(f"Error downloading or parsing article from {url}: {e}")
+        print(f"Error during extraction from {url}: {e}")
         return {
             "title": "Extraction Failed",
-            "text": f"Could not extract content from the provided URL. Error: {str(e)}",
+            "text": f"This website is protected against automated reading. Please copy and paste the article text directly into the 'Analyze Text' box instead.",
             "publish_date": None,
             "is_old": False,
             "age_days": None

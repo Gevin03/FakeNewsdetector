@@ -11,29 +11,33 @@ except LookupError:
 
 def extract_article(url):
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
         "Referer": "https://www.google.com/",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Ch-Ua": '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"Windows"',
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "cross-site",
+        "Sec-Fetch-User": "?1",
     }
 
     try:
         # Use httpx with HTTP/2 to bypass bot detection (e.g., Akamai)
-        with httpx.Client(http2=True, headers=headers, follow_redirects=True) as client:
-            response = client.get(url, timeout=15)
+        with httpx.Client(http2=True, headers=headers, follow_redirects=True, timeout=20) as client:
+            response = client.get(url)
             
             if response.status_code == 200:
                 article = Article(url)
                 article.set_html(response.text)
                 article.parse()
             else:
-                # Fallback to standard newspaper3k download if httpx returns non-200
-                config = Config()
-                config.browser_user_agent = headers["User-Agent"]
-                config.request_timeout = 15
-                article = Article(url, config=config)
-                article.download()
-                article.parse()
+                raise Exception(f"HTTP {response.status_code} - Site blocked the request")
     except Exception as e:
         print(f"Error downloading or parsing article from {url}: {e}")
         return {

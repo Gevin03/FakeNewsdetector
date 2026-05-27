@@ -191,13 +191,13 @@ function App() {
                 </motion.div>
                 
                 <h1 className="text-5xl md:text-8xl font-black mb-8 tracking-tighter leading-[0.9]">
-                  SEE BEYOND <br />
-                  <span className="gradient-text">THE DECEPTION.</span>
+                  VERIFY NEWS <br />
+                  <span className="gradient-text">INSTANTLY.</span>
                 </h1>
                 
                 <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed mb-12">
-                  TruthGuard AI uses state-of-the-art transformers to distinguish between 
-                  credible journalism and malicious misinformation.
+                  TruthGuard AI uses state-of-the-art neural engines to distinguish between 
+                  credible journalism and malicious misinformation with one click.
                 </p>
 
                 <div className="w-full max-w-4xl">

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { X, Calendar, Clock, AlertTriangle, ShieldCheck, HelpCircle, ExternalLink, RefreshCw, Trash2 } from 'lucide-react';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://fakenewsdetector-3-hvog.onrender.com';
 
 const HistorySidebar = ({ isOpen, onClose, onSelectHistoryItem }) => {
   const [historyItems, setHistoryItems] = useState([]);

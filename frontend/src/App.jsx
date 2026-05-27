@@ -8,7 +8,7 @@ import ResultsDashboard from './components/ResultsDashboard';
 import Features from './components/Features';
 import HistorySidebar from './components/HistorySidebar';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://fakenewsdetector-3-hvog.onrender.com';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);

@@ -3,9 +3,8 @@ services:
     name: fake-news-detector-backend
     env: python
     plan: free
-    dir: ./backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: python -m uvicorn app:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python -m uvicorn app:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11
@@ -22,9 +21,8 @@ services:
     name: fake-news-detector-frontend
     env: node
     plan: free
-    dir: ./frontend
-    buildCommand: npm install && npm run build
-    startCommand: npm run preview
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run preview
     envVars:
       - key: NODE_VERSION
         value: "18"
